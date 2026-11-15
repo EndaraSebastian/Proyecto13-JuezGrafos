@@ -1,0 +1,65 @@
+{
+    "version":  "0.2.0",
+    "configurations":  [
+                           {
+                               "type":  "java",
+                               "name":  "Proyecto 13 - Ejecutar Main",
+                               "request":  "launch",
+                               "mainClass":  "ec.edu.epn.eda2.juez.Main",
+                               "cwd":  "${workspaceFolder}",
+                               "classPaths":  [
+                                                  "${workspaceFolder}/out"
+                                              ],
+                               "args":  "ayuda",
+                               "console":  "integratedTerminal"
+                           },
+                           {
+                               "type":  "java",
+                               "name":  "Proyecto 13 - Generar grafos",
+                               "request":  "launch",
+                               "mainClass":  "ec.edu.epn.eda2.juez.Main",
+                               "cwd":  "${workspaceFolder}",
+                               "classPaths":  [
+                                                  "${workspaceFolder}/out"
+                                              ],
+                               "args":  "generar",
+                               "console":  "integratedTerminal"
+                           },
+                           {
+                               "type":  "java",
+                               "name":  "Proyecto 13 - Generar referencias",
+                               "request":  "launch",
+                               "mainClass":  "ec.edu.epn.eda2.juez.Main",
+                               "cwd":  "${workspaceFolder}",
+                               "classPaths":  [
+                                                  "${workspaceFolder}/out"
+                                              ],
+                               "args":  "referencias",
+                               "console":  "integratedTerminal"
+                           },
+                           {
+                               "type":  "java",
+                               "name":  "Proyecto 13 - Rendimiento",
+                               "request":  "launch",
+                               "mainClass":  "ec.edu.epn.eda2.juez.Main",
+                               "cwd":  "${workspaceFolder}",
+                               "classPaths":  [
+                                                  "${workspaceFolder}/out"
+                                              ],
+                               "args":  "rendimiento",
+                               "console":  "integratedTerminal"
+                           },
+                           {
+                               "type":  "java",
+                               "name":  "Proyecto 13 - Referencias rendimiento",
+                               "request":  "launch",
+                               "mainClass":  "ec.edu.epn.eda2.juez.Main",
+                               "cwd":  "${workspaceFolder}",
+                               "classPaths":  [
+                                                  "${workspaceFolder}/out"
+                                              ],
+                               "args":  "referencias-rendimiento",
+                               "console":  "integratedTerminal"
+                           }
+                       ]
+}
