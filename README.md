@@ -1,2 +1,242 @@
-# Proyecto13-JuezGrafos
-Framework para evaluar algoritmos de grafos - EDA II - Grupo 13
+# Proyecto 13 - Juez de Grafos
+
+## Escuela Politecnica Nacional
+**Asignatura:** Estructuras de Datos y Algoritmos II
+**Grupo:** 13
+**Lenguaje:** Java 17 o superior
+
+## 1. Descripcion
+
+Framework desarrollado en Java para evaluar
+implementaciones estudiantiles de algoritmos de grafos.
+
+El proyecto busca:
+
+1. Cargar grafos desde archivos TXT.
+2. Ejecutar DFS, BFS, orden topologico y MST.
+3. Verificar la correccion de los resultados.
+4. Medir tiempos de ejecucion y memoria.
+5. Generar reportes de evaluacion.
+
+Actualmente esta implementado el modulo de
+generacion de grafos y respuestas de referencia.
+
+## 2. Algoritmos evaluados
+
+- DFS: busqueda en profundidad.
+- BFS: busqueda en anchura.
+- Ordenamiento topologico de grafos dirigidos.
+- MST: arbol o bosque de expansion minima.
+
+## 3. Arquitectura
+
+El sistema utiliza una arquitectura modular
+orientada a objetos.
+
+Componentes:
+
+- core: modelo compartido, parser y ejecucion.
+- generador: creacion de grafos.
+- referencia: calculo de respuestas esperadas.
+- validador: comprobacion de soluciones.
+- submission: implementaciones de estudiantes.
+- docs: documentacion del sistema.
+
+Los componentes pendientes se incorporaran
+durante la integracion del framework.
+
+## 4. Estructura del repositorio
+
+```text
+Proyecto13-JuezGrafos/
+|-- src/
+|   |-- main/java/ec/edu/epn/eda2/juez/
+|   |   |-- Main.java
+|   |   |-- core/
+|   |   |-- generador/
+|   |   |-- validador/
+|   |   `-- submission/
+|   `-- test/java/
+|-- casos/
+|   |-- entrada/
+|   `-- referencia/
+|-- docs/
+|-- .gitignore
+`-- README.md
+```
+
+## 5. Requisitos
+
+- JDK 17 o superior.
+- Git.
+- Terminal compatible con Java.
+- Visual Studio Code (recomendado).
+
+El modulo actual no requiere dependencias externas.
+
+## 6. Compilacion
+
+Desde PowerShell, en la raiz del proyecto:
+
+```powershell
+New-Item -ItemType Directory -Force -Path out | Out-Null
+
+$archivos = @(Get-ChildItem "src" -Recurse -Filter "*.java" |
+    Where-Object { $_.Length -gt 0 } |
+    Select-Object -ExpandProperty FullName)
+
+javac -encoding UTF-8 -d out $archivos
+```
+
+## 7. Generar grafos
+
+```powershell
+java -cp out ec.edu.epn.eda2.juez.Main generar
+```
+
+Se crean 13 grafos en:
+
+`casos/entrada/`
+
+## 8. Generar referencias
+
+```powershell
+java -cp out ec.edu.epn.eda2.juez.Main referencias
+```
+
+Las respuestas se guardan en:
+
+`casos/referencia/`
+
+Para regenerar las referencias:
+
+```powershell
+java -cp out ec.edu.epn.eda2.juez.Main referencias --sobrescribir
+```
+
+## 9. Pruebas automatizadas
+
+Pruebas del generador:
+
+```powershell
+java -cp out ec.edu.epn.eda2.juez.generador.PruebaGenerador
+```
+
+Pruebas independientes de referencias:
+
+```powershell
+java -cp out ec.edu.epn.eda2.juez.generador.PruebaReferencias
+```
+
+Resultados obtenidos:
+
+| Prueba | Correctas | Fallidas |
+|---|---:|---:|
+| Generador | 17 | 0 |
+| Referencias | 14 | 0 |
+| Total | 31 | 0 |
+
+Estos resultados corresponden al modulo desarrollado.
+Todavia no son pruebas del juez completo.
+
+## 10. Bateria de pruebas
+
+Se incluyen 13 grafos:
+
+- Conexos y desconectados.
+- Dirigidos y no dirigidos.
+- DAGs y grafos con ciclos.
+- Densos y dispersos.
+- Casos con vertices aislados.
+- Casos con multiples MST validos.
+- Grafos aleatorios reproducibles.
+
+## 11. Formatos
+
+### Entrada
+
+```text
+U 3 2
+0 1 4
+1 2 7
+```
+
+La primera linea indica tipo, vertices y aristas.
+Las siguientes indican origen, destino y peso.
+
+### Referencia
+
+```text
+FORMATO=REFERENCIA_V1
+CASO=01_conexo
+INICIO=0
+BFS_ORDEN=0,1,2,3,4
+BFS_DISTANCIAS=0,1,1,2,2
+DFS_ORDEN=0,1,2,3,4
+TOPO_ESTADO=NO_APLICA
+TOPO_ORDEN=NO_APLICA
+MST_PESO=10
+MST_COMPONENTES=1
+```
+
+## 12. Documentacion
+
+- [Contrato de formatos](docs/contrato-formatos.md)
+- [Arquitectura del sistema](docs/arquitectura.md)
+- [Manual de uso](docs/manual-uso.md)
+- [Bateria de pruebas](docs/bateria-pruebas.md)
+
+## 13. Distribucion del trabajo
+
+### Estudiante 1 - Core y medicion
+
+Responsable de:
+- Parser de entrada.
+- Contrato de submission.
+- Ejecucion de implementaciones.
+- Medicion de tiempo y memoria.
+- Reporte del juez.
+
+### Estudiante 2 - Validacion y submission
+
+Responsable de:
+- Validacion de DFS y BFS.
+- Validacion del orden topologico.
+- Validacion de MST.
+- Implementacion estudiantil de ejemplo.
+
+### Estudiante 3 - Grafos y documentacion
+
+Responsable de:
+- Generacion manual y aleatoria.
+- Bateria de pruebas.
+- Referencias de resultados.
+- Pruebas del generador.
+- Documentacion y arquitectura.
+
+## 14. Estado del proyecto
+
+Implementado:
+- Modelo compartido de grafos.
+- Generacion de 13 casos.
+- Generacion de 13 referencias.
+- Pruebas automatizadas.
+- Documentacion inicial.
+
+Pendiente:
+- Parser y ejecucion de submissions.
+- Validadores de algoritmos.
+- Medicion de tiempo y memoria.
+- Reporte integrado.
+- Pruebas de integracion del framework.
+
+## 15. Observaciones
+
+El proyecto se desarrolla de forma colaborativa
+mediante Git y GitHub.
+
+Las referencias admiten soluciones alternativas
+cuando el algoritmo lo permite.
+
+Se utiliza una semilla fija para reproducir
+los grafos aleatorios.
