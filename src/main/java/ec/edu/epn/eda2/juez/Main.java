@@ -5,6 +5,8 @@ import ec.edu.epn.eda2.juez.generador.io.EscritorGrafoTxt;
 import ec.edu.epn.eda2.juez.generador.referencia.CalculadorReferencias;
 import ec.edu.epn.eda2.juez.generador.referencia.EscritorReferenciaTxt;
 import ec.edu.epn.eda2.juez.generador.servicio.BateriaCasos;
+import ec.edu.epn.eda2.juez.generador.servicio.BateriaRendimiento;
+import ec.edu.epn.eda2.juez.generador.referencia.GeneradorReferenciasRendimiento;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,6 +23,10 @@ public final class Main {
 
     private static final Path CARPETA_REFERENCIA =
             Path.of("casos", "referencia");
+
+    //Carpeta destinada a los casos de rendimiento.
+    private static final Path CARPETA_RENDIMIENTO =
+            Path.of("casos", "rendimiento");
 
     //Impide crear instancias innecesarias de Main.
     private Main() {
@@ -42,6 +48,31 @@ public final class Main {
                 case "generar":
                     generarCasos();
                     break;
+
+                case "rendimiento":
+                    generarRendimiento();
+                    break;
+
+                case "referencias-rendimiento": {
+                    //Comprueba los argumentos permitidos.
+                    if (args.length > 2 ||
+                            (args.length == 2 &&
+                            !"--sobrescribir".equals(args[1]))) {
+
+                        System.out.println(
+                                "Uso: referencias-rendimiento [--sobrescribir]"
+                        );
+                        break;
+                    }
+
+                    //Conserva los archivos existentes por defecto.
+                    boolean sobrescribir = args.length == 2;
+
+                    GeneradorReferenciasRendimiento.generar(
+                            sobrescribir
+                    );
+                    break;
+                }
 
                 case "referencias":
 
@@ -151,6 +182,34 @@ public final class Main {
         System.out.println("Proceso finalizado correctamente.");
     }
 
+    //Genera los grafos utilizados en pruebas de rendimiento.
+    private static void generarRendimiento() throws IOException {
+
+        List<CasoGrafo> casos = BateriaRendimiento.crearBateria();
+
+        System.out.println("PROYECTO 13 - JUEZ DE GRAFOS");
+        System.out.println("Generacion de grafos de rendimiento");
+        System.out.println("-----------------------------------");
+
+        //Guarda cada grafo en su carpeta independiente.
+        for (CasoGrafo caso : casos) {
+
+            Path archivo = EscritorGrafoTxt.guardar(
+                caso, CARPETA_RENDIMIENTO
+            );
+
+            System.out.println(
+                "Generado: " + archivo
+                + " | V=" + caso.vertices()
+                + " | E=" + caso.aristas().size()
+            );
+        }
+
+        System.out.println("-----------------------------------");
+        System.out.println("Total de casos: " + casos.size());
+        System.out.println("Generacion finalizada correctamente.");
+    }
+
     //Muestra los comandos disponibles.
     private static void mostrarAyuda() {
 
@@ -166,6 +225,16 @@ public final class Main {
         System.out.println("  referencias --sobrescribir");
         System.out.println("    Regenera las referencias existentes.");
         System.out.println();
+        System.out.println("  rendimiento");
+        System.out.println("    Genera los grafos grandes de prueba.");
+        System.out.println();
+
+        System.out.println("  referencias-rendimiento");
+        System.out.println("    Calcula referencias para grafos grandes.");
+        System.out.println("  referencias-rendimiento --sobrescribir");
+        System.out.println("    Reemplaza las referencias existentes.");
+        System.out.println();
+
         System.out.println("  ayuda");
         System.out.println("    Muestra esta informacion.");
     }

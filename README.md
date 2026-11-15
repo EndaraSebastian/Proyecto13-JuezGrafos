@@ -240,3 +240,100 @@ cuando el algoritmo lo permite.
 
 Se utiliza una semilla fija para reproducir
 los grafos aleatorios.
+
+## Batería de rendimiento y verificación ampliada
+
+El módulo de generación incluye 18 grafos y 18 referencias.
+
+Se utilizan dos conjuntos de casos:
+
+- 13 casos funcionales para verificar algoritmos.
+- 5 casos grandes para futuros experimentos de rendimiento.
+
+### Casos de rendimiento
+
+| Caso | Vértices | Aristas | Peso MST |
+|---|---:|---:|---:|
+| 14 - Disperso | 100 | 150 | 857 |
+| 15 - Denso | 100 | 3960 | 100 |
+| 16 - Disperso | 500 | 750 | 3919 |
+| 17 - Denso | 500 | 99800 | 499 |
+| 18 - Disperso | 1000 | 1500 | 7875 |
+
+Los cinco grafos son no dirigidos, ponderados, conexos
+y reproducibles mediante semillas fijas.
+
+Los pesos MST fueron contrastados utilizando Prim
+y Kruskal. Los resultados BFS también se verificaron
+con una implementación independiente.
+
+### Carpetas
+
+- `casos/entrada/`: 13 grafos funcionales.
+- `casos/referencia/`: 13 referencias funcionales.
+- `casos/rendimiento/`: 5 grafos grandes.
+- `casos/referencias-rendimiento/`: 5 referencias grandes.
+
+### Comandos principales
+
+Generar grafos funcionales:
+
+```powershell
+java -cp out ec.edu.epn.eda2.juez.Main generar
+```
+
+Generar referencias funcionales:
+
+```powershell
+java -cp out ec.edu.epn.eda2.juez.Main referencias
+```
+
+Generar grafos de rendimiento:
+
+```powershell
+java -cp out ec.edu.epn.eda2.juez.Main rendimiento
+```
+
+Generar referencias de rendimiento:
+
+```powershell
+java -cp out ec.edu.epn.eda2.juez.Main referencias-rendimiento
+```
+
+Por defecto, las referencias existentes se conservan.
+
+### Pruebas automatizadas
+
+Las clases de prueba se encuentran en
+`src/test/java/ec/edu/epn/eda2/juez/generador/`.
+
+| Clase | Comprobaciones |
+|---|---:|
+| `PruebaGenerador` | 17 |
+| `PruebaReferencias` | 14 |
+| `PruebaRendimiento` | 7 |
+| `PruebaReferenciasRendimiento` | 5 |
+| `PruebaCasosNegativos` | 12 |
+| **Total** | **55** |
+
+Resultado de la ejecución conjunta:
+
+- Clases de prueba superadas: 5 de 5.
+- Comprobaciones correctas: 55.
+- Comprobaciones fallidas: 0.
+
+### Limitaciones actuales
+
+Los cinco grafos grandes son no dirigidos.
+Todavía no se incluyen DAGs grandes ni grafos
+dirigidos grandes con ciclos.
+
+El ejecutor, el parser, el validador general y las
+mediciones de tiempo y memoria se integrarán
+con los módulos de los otros integrantes.
+
+Estos resultados verifican la generación y las
+referencias; no representan un benchmark final.
+
+Para más detalles, consultar
+[Documentación de rendimiento](docs/rendimiento.md).

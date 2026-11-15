@@ -307,3 +307,118 @@ solicitadas en el Proyecto 13.
 Las comprobaciones automatizadas permiten
 verificar propiedades y resultados antes
 de integrar el framework completo.
+
+## Ampliación: rendimiento y pruebas negativas
+
+### 1. Casos de rendimiento
+
+Se incorporaron cinco grafos adicionales para
+preparar los experimentos de eficiencia algorítmica.
+
+| Caso | Vértices | Aristas | Peso MST |
+|---|---:|---:|---:|
+| 14 - Disperso | 100 | 150 | 857 |
+| 15 - Denso | 100 | 3960 | 100 |
+| 16 - Disperso | 500 | 750 | 3919 |
+| 17 - Denso | 500 | 99800 | 499 |
+| 18 - Disperso | 1000 | 1500 | 7875 |
+
+Todos los casos son grafos no dirigidos,
+ponderados, conexos y reproducibles.
+
+Los archivos se encuentran en:
+
+- `casos/rendimiento/`
+- `casos/referencias-rendimiento/`
+
+### 2. Verificación de grafos grandes
+
+Clase: `PruebaRendimiento.java`
+
+Se comprueba:
+
+- Existencia de los cinco archivos TXT.
+- Cantidad de vértices y aristas.
+- Formato del encabezado y de las conexiones.
+- Vértices dentro del rango permitido.
+- Pesos entre 1 y 20.
+- Ausencia de bucles propios.
+- Ausencia de aristas duplicadas.
+- Conectividad mediante Union-Find.
+- Reproducibilidad de una configuración.
+
+Resultado: 7 pruebas correctas y 0 fallidas.
+
+### 3. Verificación independiente de referencias
+
+Clase: `PruebaReferenciasRendimiento.java`
+
+Se utilizaron implementaciones independientes:
+
+- Prim para contrastar los pesos MST de Kruskal.
+- BFS para verificar distancias y órdenes de recorrido.
+
+Se comprobaron los cinco casos grandes.
+
+Resultado: 5 pruebas correctas y 0 fallidas.
+
+### 4. Pruebas negativas del modelo
+
+Clase: `PruebaCasosNegativos.java`
+
+Casos inválidos rechazados:
+
+1. Origen negativo.
+2. Destino negativo.
+3. Peso igual a cero.
+4. Peso negativo.
+5. Bucle propio.
+6. Vértice fuera de rango.
+7. Aristas duplicadas no dirigidas.
+8. Aristas duplicadas dirigidas.
+9. Grafo sin vértices.
+
+Casos válidos aceptados:
+
+10. Grafo desconectado.
+11. Aristas dirigidas opuestas.
+12. Grafo de un solo vértice.
+
+Resultado: 12 pruebas correctas y 0 fallidas.
+
+Estas comprobaciones corresponden al modelo
+`Arista` y `CasoGrafo`. No sustituyen las
+futuras pruebas del parser ni del validador.
+
+### 5. Resumen de ejecución
+
+| Clase de prueba | Correctas | Fallidas |
+|---|---:|---:|
+| PruebaGenerador | 17 | 0 |
+| PruebaReferencias | 14 | 0 |
+| PruebaRendimiento | 7 | 0 |
+| PruebaReferenciasRendimiento | 5 | 0 |
+| PruebaCasosNegativos | 12 | 0 |
+| **Total** | **55** | **0** |
+
+Las cinco clases se ejecutaron en conjunto
+y todas finalizaron correctamente.
+
+### 6. Pruebas pendientes de integración
+
+Cuando estén disponibles los otros módulos,
+será necesario comprobar:
+
+- Lectura y rechazo de TXT mal formados.
+- Rechazo de soluciones incorrectas.
+- Aceptación de MST alternativos válidos.
+- Aceptación de órdenes topológicos válidos.
+- Ejecución completa mediante el juez.
+- Mediciones repetidas de tiempo y memoria.
+
+Los grafos grandes actuales son no dirigidos.
+Todavía no representan una batería completa
+de rendimiento para ordenamiento topológico.
+
+Los 55 resultados anteriores son pruebas
+de corrección, no mediciones de benchmark.

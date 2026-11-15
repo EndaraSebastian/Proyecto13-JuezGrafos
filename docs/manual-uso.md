@@ -303,3 +303,120 @@ de referencia de manera reproducible.
 Las pruebas automatizadas contribuyen
 a comprobar el funcionamiento del modulo
 antes de integrarlo con el juez completo.
+
+## Ampliacion: grafos de rendimiento
+
+### Objetivo
+
+La bateria de rendimiento permite trabajar con
+grafos de mayor tamano y diferentes densidades.
+
+Se mantienen separados los 13 casos funcionales
+y los 5 casos de rendimiento.
+
+### Generar los grafos grandes
+
+Ejecutar desde la raiz del repositorio:
+
+```powershell
+java -cp out ec.edu.epn.eda2.juez.Main rendimiento
+```
+
+Este comando genera cinco archivos TXT en:
+
+`casos/rendimiento/`
+
+### Generar las referencias
+
+Ejecutar:
+
+```powershell
+java -cp out ec.edu.epn.eda2.juez.Main referencias-rendimiento
+```
+
+Las respuestas se almacenan en:
+
+`casos/referencias-rendimiento/`
+
+Para regenerar las referencias existentes:
+
+```powershell
+java -cp out ec.edu.epn.eda2.juez.Main referencias-rendimiento --sobrescribir
+```
+
+Esta opcion reemplaza los archivos de referencias
+de rendimiento previamente generados.
+
+### Compilar las clases Java
+
+Desde PowerShell en la raiz del repositorio:
+
+```powershell
+$archivos = @(Get-ChildItem "src" -Recurse -Filter "*.java" |
+    Select-Object -ExpandProperty FullName)
+
+New-Item -ItemType Directory -Force -Path out | Out-Null
+
+javac -encoding UTF-8 -d out $archivos
+```
+
+### Ejecutar las pruebas
+
+Primero debe haberse compilado el proyecto.
+
+Generador funcional:
+
+```powershell
+java -cp out ec.edu.epn.eda2.juez.generador.PruebaGenerador
+```
+
+Referencias funcionales:
+
+```powershell
+java -cp out ec.edu.epn.eda2.juez.generador.PruebaReferencias
+```
+
+Grafos de rendimiento:
+
+```powershell
+java -cp out ec.edu.epn.eda2.juez.generador.PruebaRendimiento
+```
+
+Referencias de rendimiento:
+
+```powershell
+java -cp out ec.edu.epn.eda2.juez.generador.PruebaReferenciasRendimiento
+```
+
+Casos negativos del modelo:
+
+```powershell
+java -cp out ec.edu.epn.eda2.juez.generador.PruebaCasosNegativos
+```
+
+### Resultados verificados
+
+| Prueba | Correctas | Fallidas |
+|---|---:|---:|
+| Generador | 17 | 0 |
+| Referencias funcionales | 14 | 0 |
+| Grafos de rendimiento | 7 | 0 |
+| Referencias de rendimiento | 5 | 0 |
+| Casos negativos del modelo | 12 | 0 |
+| Total | 55 | 0 |
+
+Las pruebas se ejecutaron correctamente
+en conjunto durante el desarrollo.
+
+### Consideraciones
+
+Los grafos grandes son actualmente
+no dirigidos y ponderados.
+
+La validacion de soluciones estudiantiles
+y la medicion real de tiempo y memoria
+dependen de los modulos pendientes
+de integracion.
+
+La documentacion detallada de los casos
+se encuentra en `docs/rendimiento.md`.
