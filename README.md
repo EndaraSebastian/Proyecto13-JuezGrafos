@@ -15,11 +15,15 @@ El proyecto busca:
 1. Cargar grafos desde archivos TXT.
 2. Ejecutar DFS, BFS, orden topologico y MST.
 3. Verificar la correccion de los resultados.
-4. Medir tiempos de ejecucion y memoria.
+4. Medir tiempos de ejecucion (System.nanoTime) y memoria
+   asignada por cada algoritmo.
 5. Generar reportes de evaluacion.
 
-Actualmente esta implementado el modulo de
-generacion de grafos y respuestas de referencia.
+Actualmente estan implementados el modulo de generacion
+de grafos y referencias (Estudiante 3) y el core del juez:
+parser, interfaz de submission, ejecucion, medicion y
+reporte (Estudiante 1), el validador real y una submission
+de ejemplo correcta (Estudiante 2). El framework esta completo.
 
 ## 2. Algoritmos evaluados
 
@@ -42,8 +46,9 @@ Componentes:
 - submission: implementaciones de estudiantes.
 - docs: documentacion del sistema.
 
-Los componentes pendientes se incorporaran
-durante la integracion del framework.
+Todo esta integrado: core (parser, ejecucion, medicion y
+reporte), validador real (`ValidadorGrafos`) y submission de
+ejemplo (`SolucionModelo`); ver [validador.md](docs/validador.md).
 
 ## 4. Estructura del repositorio
 
@@ -59,7 +64,10 @@ Proyecto13-JuezGrafos/
 |   `-- test/java/
 |-- casos/
 |   |-- entrada/
-|   `-- referencia/
+|   |-- referencia/
+|   |-- rendimiento/
+|   `-- referencias-rendimiento/
+|-- scripts/
 |-- docs/
 |-- .gitignore
 `-- README.md
@@ -185,6 +193,8 @@ MST_COMPONENTES=1
 - [Arquitectura del sistema](docs/arquitectura.md)
 - [Manual de uso](docs/manual-uso.md)
 - [Bateria de pruebas](docs/bateria-pruebas.md)
+- [Core del juez](docs/core-juez.md)
+- [Validador y submission de ejemplo](docs/validador.md)
 
 ## 13. Distribucion del trabajo
 
@@ -218,17 +228,23 @@ Responsable de:
 
 Implementado:
 - Modelo compartido de grafos.
-- Generacion de 13 casos.
-- Generacion de 13 referencias.
-- Pruebas automatizadas.
-- Documentacion inicial.
+- Generacion de 13 casos funcionales y 5 de rendimiento.
+- Generacion de las 18 referencias.
+- Parser de grafos y de referencias (Estudiante 1).
+- Interfaz de submission con los 4 metodos (Estudiante 1).
+- Ejecucion, medicion de tiempo y reporte con CSV (Estudiante 1).
+- Comando juzgar y punto de conexion del validador (Estudiante 1).
+- Pruebas automatizadas (191 comprobaciones).
+- Documentacion del generador y del core.
 
-Pendiente:
-- Parser y ejecucion de submissions.
-- Validadores de algoritmos.
-- Medicion de tiempo y memoria.
-- Reporte integrado.
-- Pruebas de integracion del framework.
+Implementado por el Estudiante 2:
+- Validador real de DFS, BFS, orden topologico y MST (`ValidadorGrafos`).
+- Submission de ejemplo correcta (`SolucionModelo`).
+- Pruebas del validador (`PruebaValidador`).
+- Medicion de memoria asignada por algoritmo (columna MEM(KB) y `memoria_bytes` en el CSV).
+
+Fuera de alcance de esta version:
+- DAGs y grafos dirigidos grandes en la bateria de rendimiento.
 
 ## 15. Observaciones
 
@@ -328,12 +344,84 @@ Los cinco grafos grandes son no dirigidos.
 Todavía no se incluyen DAGs grandes ni grafos
 dirigidos grandes con ciclos.
 
-El ejecutor, el parser, el validador general y las
-mediciones de tiempo y memoria se integrarán
-con los módulos de los otros integrantes.
+El parser, el ejecutor, el validador y la medición de tiempo
+ya están integrados. La memoria se mide como bytes asignados por
+la solución (ver [core-juez.md](docs/core-juez.md)).
 
 Estos resultados verifican la generación y las
 referencias; no representan un benchmark final.
 
 Para más detalles, consultar
 [Documentación de rendimiento](docs/rendimiento.md).
+
+## Core del juez: juzgar una solución
+
+El core (Estudiante 1) lee los TXT, ejecuta una solución de
+estudiante, mide el tiempo de cada algoritmo y muestra si el
+resultado es correcto. Detalle completo en
+[docs/core-juez.md](docs/core-juez.md).
+
+### Interfaz que implementa cada solución
+
+`ec.edu.epn.eda2.juez.submission.SolucionEstudiante`:
+
+```java
+int[] dfs(GrafoCargado grafo, int inicio);
+ResultadoBFS bfs(GrafoCargado grafo, int inicio);
+ResultadoTopologico ordenTopologico(GrafoCargado grafo);
+ResultadoMST mst(GrafoCargado grafo);
+```
+
+### Juzgar una solución
+
+Después de compilar `src` (sección 6):
+
+```powershell
+java -cp out ec.edu.epn.eda2.juez.Main juzgar <ClaseSolucion> --casos todos --csv resultados.csv
+```
+
+Opciones: `--validador`, `--casos funcional|rendimiento|todos`,
+`--filtro`, `--repeticiones`, `--calentamientos`, `--timeout-ms`,
+`--pila-mb` y `--csv`. Ejecutar `juzgar` sin argumentos muestra
+la ayuda completa.
+
+El validador por defecto es `ValidadorGrafos`. Con
+`--validador ec.edu.epn.eda2.juez.validador.ValidadorPendiente` el
+reporte muestra `SIN_VALIDAR` junto con los tiempos medidos.
+
+### Submission de ejemplo
+
+```powershell
+java -cp out ec.edu.epn.eda2.juez.Main juzgar ec.edu.epn.eda2.juez.submission.SolucionModelo --casos todos --csv resultados.csv
+```
+
+Resultado: 54 CORRECTO, 18 NO_APLICA, 0 fallos, codigo de salida 0.
+
+### Pruebas del core
+
+```powershell
+java -cp out ec.edu.epn.eda2.juez.core.PruebaParser
+java -cp out ec.edu.epn.eda2.juez.core.PruebaMedidor
+java -cp out ec.edu.epn.eda2.juez.core.PruebaEjecutorJuez
+java -cp out ec.edu.epn.eda2.juez.core.PruebaValidador
+```
+
+| Clase | Comprobaciones |
+|---|---:|
+| `PruebaParser` | 61 |
+| `PruebaMedidor` | 10 |
+| `PruebaEjecutorJuez` | 33 |
+| `PruebaValidador` | 29 |
+| `PruebaMedidor` (incluye memoria) | 13 |
+| Core y validador | 136 |
+| Generador, referencias y rendimiento | 55 |
+| **Total** | **191** |
+
+`PruebaEjecutorJuez` usa soluciones y un validador de prueba
+declarados en la propia clase. `PruebaValidador` prueba el validador
+real y la submission de ejemplo (incluye soluciones erroneas que deben
+ser rechazadas).
+
+Todas las pruebas de una vez: `scripts/compilar-y-probar.sh`
+(Linux/macOS) o, en Windows,
+`powershell -ExecutionPolicy Bypass -File scripts\compilar-y-probar.ps1`.

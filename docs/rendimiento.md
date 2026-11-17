@@ -94,7 +94,7 @@ de una configuracion de generacion.
 Cuando este integrado el juez se mediran:
 
 - Tiempo de ejecucion en nanosegundos.
-- Uso estimado de memoria.
+- Memoria asignada por algoritmo (bytes asignados por la solucion).
 - Resultados de correccion.
 - Diferencias entre grafos densos y dispersos.
 - Comportamiento ante distintos tamanos.

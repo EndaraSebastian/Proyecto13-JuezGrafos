@@ -26,10 +26,12 @@ Clases existentes:
 - TipoGrafo: identifica grafos dirigidos y no dirigidos.
 - CasoGrafo: almacena vertices, aristas y metadatos.
 
-Pendiente de integrar:
-- Parser de archivos TXT.
-- Contrato de soluciones de estudiantes.
-- Ejecutor y medicion de rendimiento.
+Integrado por el Estudiante 1 (detalle en core-juez.md):
+- GrafoCargado y Vecino: grafo en memoria con adyacencia.
+- LectorGrafoTxt y LectorReferenciaTxt: parser de TXT.
+- SolucionEstudiante: contrato de las soluciones.
+- MedidorEjecucion y EjecutorJuez: ejecucion y medicion.
+- ReporteJuez y JuezCli: reporte y comando juzgar.
 
 ### Generador
 
@@ -54,24 +56,26 @@ los resultados de referencia.
 
 ### Validador
 
-Pendiente de implementar.
+Implementado en `ValidadorGrafos`.
 
-Comprobara los resultados de los algoritmos,
-considerando soluciones alternativas validas.
+Comprueba los resultados de los algoritmos,
+aceptando todas las soluciones alternativas validas
+(ver validador.md).
 
 ### Submission
 
-Pendiente de implementar.
+Implementada en `SolucionModelo`.
 
-Contendra un ejemplo de implementacion estudiantil
+Ejemplo correcto de implementacion estudiantil
 de DFS, BFS, orden topologico y MST.
 
 ### Reporte y medicion
 
-Pendientes de implementar.
+Implementados en el core (Estudiante 1).
 
-Registraran resultados de correccion, tiempos
-de ejecucion y uso estimado de memoria.
+Registran el resultado de correccion y el tiempo de
+ejecucion de cada algoritmo, junto con la memoria asignada
+(bytes asignados por el hilo de la solucion).
 
 ## 4. Diagrama de arquitectura
 
@@ -87,23 +91,22 @@ flowchart TD
     E --> H[("TXT de entrada")]
     G --> I[("TXT de referencia")]
 
-    H --> J["Parser - pendiente"]
-    J --> K["Ejecutor - pendiente"]
-    L["Submission - pendiente"] --> K
+    H --> J["Parser"]
+    J --> K["Ejecutor"]
+    L["Submission"] --> K
 
-    K --> M["Validador - pendiente"]
+    K --> M["Validador"]
     I --> M
 
-    K --> N["Medicion - pendiente"]
-    M --> O["Reporte - pendiente"]
+    K --> N["Medicion"]
+    M --> O["Reporte"]
     N --> O
 ```
 
 El modelo compartido del core es utilizado
 por los componentes implementados en Java.
 
-Los componentes identificados como pendientes
-se integraran posteriormente.
+Todos los componentes estan integrados.
 
 ## 5. Formatos
 
@@ -142,11 +145,11 @@ implementaciones independientes.
 
 ## 7. Integracion
 
-El estudiante 1 integrara el parser,
-el ejecutor y la medicion.
+El estudiante 1 integro el parser, el ejecutor,
+la medicion y el reporte (ver core-juez.md).
 
-El estudiante 2 integrara el validador
-y la submission de ejemplo.
+El estudiante 2 integro el validador real
+y la submission de ejemplo (ver validador.md).
 
 El estudiante 3 proporciona los casos,
 las referencias y la documentacion.
@@ -161,13 +164,17 @@ Implementado:
 - Escritura de referencias.
 - Pruebas del generador y referencias.
 
-Pendiente:
-- Parser de entrada.
+Implementado por el Estudiante 1:
+- Parser de entrada y de referencias.
 - Interfaz de submission.
 - Ejecucion del codigo estudiantil.
-- Validacion de soluciones.
-- Medicion de rendimiento.
+- Medicion de tiempo.
 - Reporte integrado.
+
+Implementado por el Estudiante 2:
+- Validador real (`ValidadorGrafos`).
+- Submission de ejemplo (`SolucionModelo`).
+- Pruebas del validador (`PruebaValidador`).
 
 ## Ampliacion de arquitectura: rendimiento y pruebas
 
@@ -287,7 +294,7 @@ se contrastaron mediante Prim y Kruskal.
 Las distancias y los ordenes BFS tambien
 se compararon con una implementacion independiente.
 
-### 6. Integracion pendiente
+### 6. Integracion
 
 Esta arquitectura corresponde al modulo
 de generacion, referencias y pruebas.
@@ -303,3 +310,50 @@ los componentes de los otros integrantes:
 
 La integracion debera respetar el modelo
 compartido y el contrato de formatos.
+
+## Ampliacion de arquitectura: core del juez
+
+Este diagrama reemplaza al de la seccion 4 ahora que el
+parser, el ejecutor, la medicion y el reporte existen.
+El validador y la submission de ejemplo tambien estan
+integrados (Estudiante 2).
+
+```mermaid
+flowchart TD
+    MAIN["Main juzgar"] --> CLI["JuezCli"]
+    CLI --> CAT["CatalogoCasos"]
+    CLI --> EJ["EjecutorJuez"]
+    CAT --> EJ
+
+    TXT[("TXT de entrada")] --> LG["LectorGrafoTxt"]
+    REF[("TXT de referencia")] --> LR["LectorReferenciaTxt"]
+    EJ --> LG
+    EJ --> LR
+    LG --> GC["GrafoCargado"]
+    LR --> RC["ReferenciaCaso"]
+
+    GC --> MED["MedidorEjecucion"]
+    EJ --> MED
+    MED --> SOL["SolucionEstudiante"]
+    SOL --> RES["Resultados"]
+
+    RES --> VAL["ValidadorResultado<br/>ValidadorGrafos"]
+    GC --> VAL
+    RC --> VAL
+
+    VAL --> REP["ReporteJuez"]
+    MED --> REP
+    REP --> OUT[("Consola y CSV")]
+```
+
+Contratos entre componentes:
+
+| Contrato | Define | Implementa |
+|---|---|---|
+| `SolucionEstudiante` | Los 4 metodos de cada solucion | Estudiantes evaluados; ejemplo: `SolucionModelo` |
+| `ValidadorResultado` | Como se decide si una respuesta es correcta | `ValidadorGrafos` |
+| `GRAFO_V1` y `REFERENCIA_V1` | Formato de los TXT | Generador (Estudiante 3) y parser (Estudiante 1) |
+
+El punto de conexion del validador es la constante
+`VALIDADOR_POR_DEFECTO` de `JuezCli` o la opcion
+`--validador`. Ver guia-estudiante2.md.

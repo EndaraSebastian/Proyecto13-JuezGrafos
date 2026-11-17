@@ -1,5 +1,6 @@
 package ec.edu.epn.eda2.juez;
 
+import ec.edu.epn.eda2.juez.core.JuezCli;
 import ec.edu.epn.eda2.juez.core.modelo.CasoGrafo;
 import ec.edu.epn.eda2.juez.generador.io.EscritorGrafoTxt;
 import ec.edu.epn.eda2.juez.generador.referencia.CalculadorReferencias;
@@ -11,6 +12,7 @@ import ec.edu.epn.eda2.juez.generador.referencia.GeneradorReferenciasRendimiento
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -52,6 +54,19 @@ public final class Main {
                 case "rendimiento":
                     generarRendimiento();
                     break;
+
+                case "juzgar": {
+                    //Ejecuta una solucion de estudiante y muestra el reporte.
+                    int codigo = JuezCli.ejecutar(
+                            Arrays.copyOfRange(args, 1, args.length)
+                    );
+
+                    if (codigo != 0) {
+                        System.exit(codigo);
+                    }
+
+                    break;
+                }
 
                 case "referencias-rendimiento": {
                     //Comprueba los argumentos permitidos.
@@ -233,6 +248,11 @@ public final class Main {
         System.out.println("    Calcula referencias para grafos grandes.");
         System.out.println("  referencias-rendimiento --sobrescribir");
         System.out.println("    Reemplaza las referencias existentes.");
+        System.out.println();
+
+        System.out.println("  juzgar <ClaseSolucion> [opciones]");
+        System.out.println("    Ejecuta y mide una solucion de estudiante.");
+        System.out.println("    Detalle: juzgar sin argumentos.");
         System.out.println();
 
         System.out.println("  ayuda");

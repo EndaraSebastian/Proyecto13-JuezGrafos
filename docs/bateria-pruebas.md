@@ -404,17 +404,17 @@ futuras pruebas del parser ni del validador.
 Las cinco clases se ejecutaron en conjunto
 y todas finalizaron correctamente.
 
-### 6. Pruebas pendientes de integración
+### 6. Pruebas de integración
 
-Cuando estén disponibles los otros módulos,
-será necesario comprobar:
+Con los módulos integrados, estas comprobaciones están cubiertas por
+`PruebaValidador`, `PruebaEjecutorJuez` y `PruebaParser`:
 
 - Lectura y rechazo de TXT mal formados.
 - Rechazo de soluciones incorrectas.
 - Aceptación de MST alternativos válidos.
 - Aceptación de órdenes topológicos válidos.
 - Ejecución completa mediante el juez.
-- Mediciones repetidas de tiempo y memoria.
+- Mediciones repetidas de tiempo y de memoria asignada.
 
 Los grafos grandes actuales son no dirigidos.
 Todavía no representan una batería completa

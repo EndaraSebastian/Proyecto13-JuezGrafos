@@ -277,17 +277,20 @@ raiz del repositorio.
 El modulo desarrollado permite generar
 grafos, referencias y ejecutar pruebas.
 
-Todavia se encuentran pendientes:
+Ya integrados en el core (Estudiante 1):
 
-- Parser de grafos del framework.
+- Parser de grafos y de referencias.
 - Contrato de submission de estudiantes.
 - Ejecucion de algoritmos entregados.
-- Validador de soluciones.
-- Medicion de tiempo y memoria.
+- Medicion de tiempo.
 - Reporte integrado de resultados.
 
-Estas funcionalidades se integraran
-con el trabajo de los demas estudiantes.
+Integrados por el Estudiante 2:
+
+- Validador de soluciones (`ValidadorGrafos`).
+- Submission de ejemplo (`SolucionModelo`).
+
+La memoria se mide como bytes asignados por la solucion (ver core-juez.md).
 
 ## 15. Documentos relacionados
 
@@ -414,9 +417,29 @@ Los grafos grandes son actualmente
 no dirigidos y ponderados.
 
 La validacion de soluciones estudiantiles
-y la medicion real de tiempo y memoria
-dependen de los modulos pendientes
-de integracion.
+y la medicion de tiempo y memoria
+estan cubiertas por el juez (comando `juzgar`).
 
 La documentacion detallada de los casos
 se encuentra en `docs/rendimiento.md`.
+
+## Juzgar una solucion de estudiante
+
+Compilar todo `src` (seccion 9) y ejecutar desde la raiz:
+
+```powershell
+java -cp out ec.edu.epn.eda2.juez.Main juzgar <ClaseSolucion> --casos todos --csv resultados.csv
+```
+
+`<ClaseSolucion>` es el nombre completo (con paquete) de una
+clase publica que implemente `SolucionEstudiante`.
+
+Para cada caso y algoritmo, el reporte muestra el estado
+(CORRECTO, INCORRECTO, SIN_VALIDAR, NO_APLICA o un error) y el
+tiempo medido. Si algo falla, el programa termina con codigo 1.
+
+Antes de juzgar deben existir los casos y las referencias
+(comandos generar y referencias, ya incluidos en el repositorio).
+
+Opciones, estados y formato del reporte: `docs/core-juez.md`.
+Validador y submission de ejemplo: `docs/validador.md`.
